@@ -1,5 +1,7 @@
 # flask-api-structure
 
+This project is designed for developing RESTful API with `Flask`.
+
 ## Quick Start
 
 1. Install Python dependencies.
