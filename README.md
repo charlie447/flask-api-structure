@@ -10,6 +10,27 @@ This project is designed for developing RESTful API with `Flask`.
     ```
 2. `flask run`
 
+## Database
+
+1. Creating the migration repository.
+    ```
+    $ flask db init
+    ```
+
+2. Database Migration.
+    ```
+    $ flask db migrate -m "users table"
+    ```
+    The comment given with the `-m` option is optional, it adds a short descriptive text to the migration.
+
+    The `flask db migrate` command does not make any changes to the database, it just generates the migration script. To apply the changes to the database, the `flask db upgrade` command must be used.
+
+    ```
+    $ flask db upgrade
+    ```
+
+    Also it has a `flask db downgrade` command, which undoes the last migration
+
 ## Configurations on server.
 Follow the steps to run the application on remote server(MS Azure, Ubuntu LTS).
 ### Installation
