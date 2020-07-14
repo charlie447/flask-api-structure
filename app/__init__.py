@@ -5,8 +5,6 @@ from flask_migrate import Migrate
 from config import Config, DevelopmentConfig, ProductionConfig
 
 
-from app import routes
-
 def create_app(config=DevelopmentConfig):
     app = Flask(__name__)
     app.config.from_object(Config)
