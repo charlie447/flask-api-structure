@@ -17,6 +17,12 @@ class User(db.Model):
 
     
     def to_dict(self):
+        """converts a user object to a Python representation,
+            which will then be converted to JSON. 
+
+        Returns:
+            dict: the data represent the user object.
+        """
         data = {
             'id': self.id,
             'username': self.username,
@@ -24,6 +30,21 @@ class User(db.Model):
         }
 
         return data
+
+
+    def from_dict(self, data, new_user=False):
+        """the reverse direction of to_dict function.
+            convert the data to a User object.
+
+        Args:
+            data (dict): containing user info.
+        """
+        for field in ['username', 'email', 'about_me']:
+            if field in data:
+                setattr(self, field, data[field])
+        if new_user and 'password' in data:
+            self.set_password(data['password'])
+        pass
 
 
     def __repr__(self):
