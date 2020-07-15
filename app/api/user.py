@@ -1,4 +1,7 @@
+from flask.helpers import url_for
 from app.api import bp
+from app.api.errors import bad_request
+from app import db
 
 from flask import jsonify, request
 from app.models import User
@@ -28,7 +31,19 @@ def get_users():
 def create_user():
     """	Register a new user account.
     """
-    pass
+    data = request.get_json() or {}
+    if 'username' not in data or 'password' not in data:
+        return bad_request('must include username and password.')
+    if User.query.filter_by(username=data['username']).first():
+        return bad_request('Please use a different username')
+    user = User()
+    user.from_dict(data, new_user=True)
+    db.session.add(user)
+    db.session.commit()
+    response = jsonify(user.to_dict())
+    response.status_code = 201
+    response.headers['Location'] = url_for('api.get_user', id=user.id)
+    return response
 
 
 @bp.route('/users/<int:id>', methods=['PUT'])
@@ -38,4 +53,12 @@ def update_user(id):
     Args:
         id (int): User ID.
     """
-    pass
+    user = User.query.get_or_404(id)
+    data = request.get_json() or {}
+    if 'username' in data and data['username'] != user.username and \
+            User.query.filter_by(username=data['username']).first():
+        return bad_request('please use a different username')
+
+    user.from_dict(data, new_user=False)
+    db.session.commit()
+    return jsonify(user.to_dict())
