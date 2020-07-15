@@ -6,8 +6,11 @@ from app import db
 from flask import jsonify, request
 from app.models import User
 
+from app.api.auth import token_auth
+
 
 @bp.route('/users/<int:id>', methods=['GET'])
+@token_auth.login_required
 def get_user(id):
     """Return a user.
 
@@ -18,6 +21,7 @@ def get_user(id):
 
 
 @bp.route('/users', methods=['GET'])
+@token_auth.login_required
 def get_users():
     """Return the collection of all users.
     """
@@ -47,6 +51,7 @@ def create_user():
 
 
 @bp.route('/users/<int:id>', methods=['PUT'])
+@token_auth.login_required
 def update_user(id):
     """	Modify a user.
 
