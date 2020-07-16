@@ -175,6 +175,50 @@ Reference:
     [Restricting Access with HTTP Basic Authentication](https://docs.nginx.com/nginx/admin-guide/security-controls/configuring-http-basic-authentication/)
 
 
+## Deploy with Docker
+
+1. Build `Docker` image.
+
+    ```sh
+    $ docker build -t flask-api-structure:latest .
+    ```
+
+    You can obtain a list of the images that you have locally with the `docker images` command.
+
+2. Starting a Container.
+
+    ```sh
+    $ docker run --name flask-api-structure -d -p 8000:5000 --rm flask-api-structure:latest
+    ```
+
+    The `--name` option provides a name for the new container.
+    
+    The `-d `option tells Docker to run the container in the background. Without -d the container runs as a foreground application, blocking your command prompt.
+    
+    The `-p` option maps container ports to host ports. The first port is the port on the host computer, and the one on the right is the port inside the container. The above example exposes port `5000` in the container on port `8000` in the host, so you will access the application on `8000`, even though internally the container is using `5000`.
+    
+    The `--rm` option will delete the container once it is terminated. While this isn't required, containers that finish or are interrupted are usually not needed anymore, so they can be automatically deleted.
+    
+    The last argument is the container image name and tag to use for the container.
+    
+    After you run the above command, you can access the application at http://localhost:8000.
+
+
+    If you want to see what containers are running, you can use the `docker ps` command:
+    ```
+    $ docker ps
+    ```
+
+    ***
+    There is also a need to have run-time environment variables that can be set via the docker run command, and for these variables, the `-e` option can be used. The following example sets a secret key and sends email through a gmail account:
+
+    ```
+    $ docker run --name flask-api-structure -d -p 8000:5000 --rm -e SECRET_KEY=my-secret-key \
+        -e MAIL_SERVER=smtp.googlemail.com -e MAIL_PORT=587 -e MAIL_USE_TLS=true \
+        -e MAIL_USERNAME=<your-gmail-username> -e MAIL_PASSWORD=<your-gmail-password> \
+        flask-api-structure:latest
+    ```
+
 ## References
 
 [The Flask Mega-Tutorial Part XVII: Deployment on Linux](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xvii-deployment-on-linux)
