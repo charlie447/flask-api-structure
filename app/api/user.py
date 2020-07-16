@@ -1,4 +1,5 @@
 from flask.helpers import url_for
+from flask import abort
 from app.api import bp
 from app.api.errors import bad_request
 from app import db
@@ -58,6 +59,8 @@ def update_user(id):
     Args:
         id (int): User ID.
     """
+    if token_auth.current_user().id != id:
+        abort(403)
     user = User.query.get_or_404(id)
     data = request.get_json() or {}
     if 'username' in data and data['username'] != user.username and \
