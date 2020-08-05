@@ -9,6 +9,9 @@ import logging
 from logging.handlers import RotatingFileHandler
 import os
 
+from redis import Redis
+import rq
+
 from config import Config, DevelopmentConfig, ProductionConfig
 
 db = SQLAlchemy()
@@ -20,6 +23,12 @@ def create_app(config=DevelopmentConfig):
 
     db.init_app(app)
     migrate.init_app(app, db)
+
+    # using redis as task queue
+    app.redis = Redis.from_url(app.config['REDIS_URL'])
+    # NOTE: define the `app.task_queue` in order to
+    # access the queue with `current_app.task_queue` at somewhere else.
+    app.task_queue = rq.Queue('app-tasks', connection=app.redis)
 
     # register blueprint
     from app.main import bp as main_bp
